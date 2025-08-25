@@ -53,6 +53,51 @@ function LearnSign() {
     ref.camera.position.z = 1.6;
     ref.camera.position.y = 1.4;
 
+    ref.animate = () => {
+      if (ref.animations.length === 0) {
+        ref.pending = false;
+        return;
+      }
+      requestAnimationFrame(ref.animate);
+      if (ref.animations[0].length) {
+        if (!ref.flag) {
+          for (let i = 0; i < ref.animations[0].length; ) {
+            let [boneName, action, axis, limit, sign] = ref.animations[0][i];
+            if (
+              sign === "+" &&
+              ref.avatar.getObjectByName(boneName)[action][axis] < limit
+            ) {
+              ref.avatar.getObjectByName(boneName)[action][axis] += speed;
+              ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(
+                ref.avatar.getObjectByName(boneName)[action][axis],
+                limit
+              );
+              i++;
+            } else if (
+              sign === "-" &&
+              ref.avatar.getObjectByName(boneName)[action][axis] > limit
+            ) {
+              ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
+              ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(
+                ref.avatar.getObjectByName(boneName)[action][axis],
+                limit
+              );
+              i++;
+            } else {
+              ref.animations[0].splice(i, 1);
+            }
+          }
+        }
+      } else {
+        ref.flag = true;
+        setTimeout(() => {
+          ref.flag = false;
+        }, pause);
+        ref.animations.shift();
+      }
+      ref.renderer.render(ref.scene, ref.camera);
+    };
+
     const loader = new GLTFLoader();
     loader.load(bot, (gltf) => {
       gltf.scene.traverse((child) => {
@@ -64,52 +109,7 @@ function LearnSign() {
       ref.scene.add(ref.avatar);
       defaultPose(ref);
     });
-  }, [ref, bot]);
-
-  ref.animate = () => {
-    if (ref.animations.length === 0) {
-      ref.pending = false;
-      return;
-    }
-    requestAnimationFrame(ref.animate);
-    if (ref.animations[0].length) {
-      if (!ref.flag) {
-        for (let i = 0; i < ref.animations[0].length; ) {
-          let [boneName, action, axis, limit, sign] = ref.animations[0][i];
-          if (
-            sign === "+" &&
-            ref.avatar.getObjectByName(boneName)[action][axis] < limit
-          ) {
-            ref.avatar.getObjectByName(boneName)[action][axis] += speed;
-            ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(
-              ref.avatar.getObjectByName(boneName)[action][axis],
-              limit
-            );
-            i++;
-          } else if (
-            sign === "-" &&
-            ref.avatar.getObjectByName(boneName)[action][axis] > limit
-          ) {
-            ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
-            ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(
-              ref.avatar.getObjectByName(boneName)[action][axis],
-              limit
-            );
-            i++;
-          } else {
-            ref.animations[0].splice(i, 1);
-          }
-        }
-      }
-    } else {
-      ref.flag = true;
-      setTimeout(() => {
-        ref.flag = false;
-      }, pause);
-      ref.animations.shift();
-    }
-    ref.renderer.render(ref.scene, ref.camera);
-  };
+  }, [ref, bot, speed, pause]);
 
   let alphaButtons = [];
   for (let i = 0; i < 26; i++) {

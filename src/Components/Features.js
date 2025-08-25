@@ -11,6 +11,7 @@ const Features = () => {
       description:
         "Spoken words instantly converted into 3D animated avatars performing ISL with emotional accuracy.",
       details: ["Multiple language support", "3D avatar animation", "Emotion recognition"],
+      link: "/avatar",   // ✅ Direct to Avatar page
     },
     {
       icon: "👋",
@@ -18,6 +19,7 @@ const Features = () => {
       description:
         "Camera captures ISL gestures and converts them into clear speech and text for seamless communication.",
       details: ["Real-time gesture recognition", "Voice synthesis", "Text output"],
+      link: "/learn-sign",
     },
     {
       icon: "📢",
@@ -30,25 +32,25 @@ const Features = () => {
         "Hospital communications",
         "Government services",
       ],
+      link: "/public-space",
     },
     {
       icon: "🎓",
       title: "Educational & Community",
       description: "Interactive learning platform with gamified ISL lessons.",
+      link: "/education",
     },
-    {
-      icon: "🚨",
-      title: "Emergency SOS",
-      description: "One-tap emergency alerts with live location tracking.",
-    },
+    // ❌ Removed Emergency SOS feature here
     {
       icon: "🤖",
       title: "ISL Chatbot",
-      description: "Get instant answers, guidance, and support in Indian Sign Language using our powerful AI chatbot.",
+      description:
+        "Get instant answers, guidance, and support in Indian Sign Language using our powerful AI chatbot.",
       button: {
         text: "Chat Now",
         link: "/chatbot"
-      }
+      },
+      link: "/chatbot",
     },
   ];
 
@@ -69,7 +71,7 @@ const Features = () => {
 
       <div className="features-grid">
         {features.map((feature, index) => (
-          <Link to={`/${feature.title.replace(/ /g, "").toLowerCase()}`} className="feature-card" key={index}>
+          <Link to={feature.link} className="feature-card" key={index}>
             <motion.div
               className="feature-content"
               initial={{ opacity: 0, y: 40 }}
