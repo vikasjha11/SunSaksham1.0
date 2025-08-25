@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import './Features.css';
 
 const Features = () => {
@@ -41,9 +42,13 @@ const Features = () => {
       description: "One-tap emergency alerts with live location tracking.",
     },
     {
-      icon: "♿",
-      title: "Accessibility First",
-      description: "Large icons and intuitive design crafted for accessibility needs.",
+      icon: "🤖",
+      title: "ISL Chatbot",
+      description: "Get instant answers, guidance, and support in Indian Sign Language using our powerful AI chatbot.",
+      button: {
+        text: "Chat Now",
+        link: "/chatbot"
+      }
     },
   ];
 
@@ -64,25 +69,31 @@ const Features = () => {
 
       <div className="features-grid">
         {features.map((feature, index) => (
-          <motion.div
-            key={index}
-            className="feature-card"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.15 }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <div className="feature-icon">{feature.icon}</div>
-            <h3>{feature.title}</h3>
-            <p>{feature.description}</p>
-            {feature.details && (
-              <ul className="feature-details">
-                {feature.details.map((detail, i) => (
-                  <li key={i}>{detail}</li>
-                ))}
-              </ul>
-            )}
-          </motion.div>
+          <Link to={`/${feature.title.replace(/ /g, "").toLowerCase()}`} className="feature-card" key={index}>
+            <motion.div
+              className="feature-content"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <div className="feature-icon">{feature.icon}</div>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+              {feature.details && (
+                <ul className="feature-details">
+                  {feature.details.map((detail, i) => (
+                    <li key={i}>{detail}</li>
+                  ))}
+                </ul>
+              )}
+              {feature.button && (
+                <Link to={feature.button.link} className="btn btn-primary mt-4">
+                  {feature.button.text}
+                </Link>
+              )}
+            </motion.div>
+          </Link>
         ))}
       </div>
     </section>
