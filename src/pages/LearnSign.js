@@ -1,4 +1,4 @@
-import '../App.css'
+
 import React, { useState, useEffect, useRef } from "react";
 import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';

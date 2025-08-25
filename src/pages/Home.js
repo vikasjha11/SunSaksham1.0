@@ -1,5 +1,6 @@
 // src/pages/HomePage.js
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../Components/Header';
 import Features from '../Components/Features';
 import Impact from '../Components/Impact';
@@ -20,8 +21,8 @@ function Home() {
             <span className="highlight-blue">Every voice heard, every sign understood.</span>
           </p>
           <div className="hero-buttons">
-            <a href="/avatar" className="btn btn-primary">Try Live Translation</a>
-            <a href="/learn" className="btn btn-secondary">Learn ISL</a>
+            <Link to="/avatar" className="btn btn-primary">Try Live Translation</Link>
+            <Link to="/learn-sign" className="btn btn-secondary">Learn ISL</Link>
           </div>
         </section>
         <Features />
