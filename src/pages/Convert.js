@@ -1,4 +1,4 @@
-import './convert.css'
+import './convert.css';
 import React, { useState, useEffect, useRef } from "react";
 import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,6 +23,10 @@ function Convert() {
   const [bot, setBot] = useState(ybot);
   const [speed, setSpeed] = useState(0.1);
   const [pause, setPause] = useState(800);
+  const [activeBot, setActiveBot] = useState('khushi');
+  const [activeTab, setActiveTab] = useState('speech');
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [showSettings, setShowSettings] = useState(false);
 
   const componentRef = useRef({});
   const { current: ref } = componentRef;
@@ -31,6 +35,18 @@ function Convert() {
   const textFromInput = useRef();
 
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
+
+  // Check screen size on resize
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) setShowSettings(false);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Initialize Three.js scene
   useEffect(() => {
@@ -161,54 +177,226 @@ function Convert() {
   const startListening = () => SpeechRecognition.startListening({ continuous: true });
   const stopListening = () => SpeechRecognition.stopListening();
 
+  const handleBotChange = (botType, botModel) => {
+    setBot(botModel);
+    setActiveBot(botType);
+  };
+
   return (
-    <div className='container-fluid'>
-      <div className='row'>
-        {/* Left Panel */}
-        <div className='col-12 col-md-3 mb-3'>
-          <label className='label-style'>Processed Text</label>
-          <textarea rows={3} value={text} className='w-100 input-style' readOnly />
+    <div className='container-fluid modern-container'>
+      {/* Mobile Header */}
+      {isMobile && (
+        <div className='mobile-header'>
+          <h2>💬 Welcome! 🖐 Bridging Voices with Hands 🤝</h2>
+          <button 
+            className={`settings-toggle ${showSettings ? 'active' : ''}`}
+            onClick={() => setShowSettings(!showSettings)}
+          >
+            <i className={`fa fa-${showSettings ? 'times' : 'cog'}`}></i>
+          </button>
+        </div>
+      )}
 
-          <label className='label-style'>Speech Recognition: {listening ? 'on' : 'off'}</label>
-          <div className='d-flex justify-content-between mb-2'>
-            <button className="btn btn-primary btn-style" onClick={startListening}>
-              Mic On <i className="fa fa-microphone"/>
-            </button>
-            <button className="btn btn-primary btn-style" onClick={stopListening}>
-              Mic Off <i className="fa fa-microphone-slash"/>
-            </button>
-            <button className="btn btn-primary btn-style" onClick={resetTranscript}>
-              Clear
-            </button>
+      <div className='row h-100'>
+        {/* Header for Desktop */}
+        {!isMobile && (
+          <div className='col-12'>
+            <div className='modern-header'>
+              <h2>💬 Welcome! 🖐 Bridging Voices with Hands 🤝</h2>
+              <p>Convert speech or text to sign language animations</p>
+            </div>
           </div>
-          <textarea rows={3} ref={textFromAudio} value={transcript} placeholder='Speech input ...' className='w-100 input-style' />
-          <button onClick={() => sign(textFromAudio)} className='btn btn-primary w-100 btn-style btn-start mb-2'>
-            Start Animations
-          </button>
+        )}
 
-          <label className='label-style'>Text Input</label>
-          <textarea rows={3} ref={textFromInput} placeholder='Text input ...' className='w-100 input-style' />
-          <button onClick={() => sign(textFromInput)} className='btn btn-primary w-100 btn-style btn-start'>
-            Start Animations
-          </button>
+        {/* Main Content Area */}
+        <div className={`col-12 ${isMobile ? '' : 'col-md-8'} main-content`}>
+          <div className='content-wrapper'>
+            {/* Canvas */}
+            <div className='modern-canvas-container'>
+              <div id='canvas' ref={(el) => ref.container = el} className='modern-canvas' />
+              <div className='canvas-overlay'>
+                <div className='animation-status'>
+                  {ref && ref.animations && ref.animations.length > 0 ? (
+                    <span className='status-playing'><i className="fa fa-play"></i> Playing</span>
+                  ) : (
+                    <span className='status-idle'><i className="fa fa-pause"></i> Ready</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Combined Input Area */}
+            <div className='modern-card combined-input-card'>
+              <div className='modern-card-header'>
+                <i className="fa fa-comments"></i>
+                <span>Input & Output</span>
+              </div>
+              <div className='modern-card-body'>
+                {/* Processed Text Output */}
+                <div className='output-section'>
+                  <label className='section-label'>Processed Text</label>
+                  <div className='text-output'>
+                    {text || <span className='placeholder-text'>Processed text will appear here</span>}
+                  </div>
+                </div>
+
+                {/* Tab Navigation */}
+                <div className='input-tabs'>
+                  <button 
+                    className={`tab-button ${activeTab === 'speech' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('speech')}
+                  >
+                    <i className="fa fa-microphone"></i> {isMobile ? '' : 'Speech Input'}
+                  </button>
+                  <button 
+                    className={`tab-button ${activeTab === 'text' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('text')}
+                  >
+                    <i className="fa fa-keyboard-o"></i> {isMobile ? '' : 'Text Input'}
+                  </button>
+                </div>
+
+                {/* Speech Input Tab */}
+                {activeTab === 'speech' && (
+                  <div className='tab-content'>
+                    <div className='mic-controls'>
+                      <div className='mic-status'>
+                        <span>{listening ? 'Listening...' : 'Mic Ready'}</span>
+                        <div className={`status-indicator ${listening ? 'listening' : ''}`}></div>
+                      </div>
+                      <div className='button-group'>
+                        <button className={`modern-btn ${listening ? 'btn-active' : ''}`} onClick={startListening}>
+                          <i className="fa fa-microphone"></i> {isMobile ? '' : 'Start'}
+                        </button>
+                        <button className='modern-btn' onClick={stopListening}>
+                          <i className="fa fa-microphone-slash"></i> {isMobile ? '' : 'Stop'}
+                        </button>
+                        <button className='modern-btn' onClick={resetTranscript}>
+                          <i className="fa fa-trash"></i> {isMobile ? '' : 'Clear'}
+                        </button>
+                      </div>
+                    </div>
+                    <div className='speech-transcript'>
+                      <textarea 
+                        rows={3} 
+                        ref={textFromAudio} 
+                        value={transcript} 
+                        placeholder='Speech input will appear here...' 
+                        className='modern-textarea' 
+                      />
+                    </div>
+                    <button onClick={() => sign(textFromAudio)} className='modern-btn modern-btn-primary w-100'>
+                      <i className="fa fa-play"></i> Start Animation
+                    </button>
+                  </div>
+                )}
+
+                {/* Text Input Tab */}
+                {activeTab === 'text' && (
+                  <div className='tab-content'>
+                    <div className='text-input-section'>
+                      <textarea 
+                        rows={3} 
+                        ref={textFromInput} 
+                        placeholder='Type text to convert to sign language...' 
+                        className='modern-textarea' 
+                      />
+                    </div>
+                    <button onClick={() => sign(textFromInput)} className='modern-btn modern-btn-primary w-100'>
+                      <i className="fa fa-play"></i> Start Animation
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Canvas */}
-        <div className='col-12 col-md-7 mb-3'>
-          <div id='canvas' ref={(el) => ref.container = el} style={{ width: '100%', height: '60vh', position: 'relative' }} />
-        </div>
+        {/* Right Panel - Settings (visible on desktop or when toggled on mobile) */}
+        <div className={`col-12 col-md-4 modern-panel ${isMobile ? 'mobile-settings' : ''} ${showSettings ? 'show' : ''}`}>
+          <div className='settings-content'>
+            <div className='modern-card'>
+              <div className='modern-card-header'>
+                <i className="fa fa-user"></i>
+                <span>Select Avatar</span>
+              </div>
+              <div className='modern-card-body'>
+                <div className='avatar-selection'>
+                  <div 
+                    className={`avatar-option ${activeBot === 'vishu' ? 'active' : ''}`}
+                    onClick={() => handleBotChange('vishu', xbot)}
+                  >
+                    <img src={xbotPic} className='avatar-image' alt='Vishu Avatar'/>
+                    <span>Vishu</span>
+                  </div>
+                  <div 
+                    className={`avatar-option ${activeBot === 'khushi' ? 'active' : ''}`}
+                    onClick={() => handleBotChange('khushi', ybot)}
+                  >
+                    <img src={ybotPic} className='avatar-image' alt='Khushi Avatar'/>
+                    <span>Khushi</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        {/* Right Panel */}
-        <div className='col-12 col-md-2 mb-3'>
-          <p className='bot-label'>Select Avatar</p>
-          <img src={xbotPic} className='bot-image mb-2' onClick={() => setBot(xbot)} alt='Avatar 1: XBOT'/>
-          <img src={ybotPic} className='bot-image mb-2' onClick={() => setBot(ybot)} alt='Avatar 2: YBOT'/>
+            <div className='modern-card'>
+              <div className='modern-card-header'>
+                <i className="fa fa-dashboard"></i>
+                <span>Animation Settings</span>
+              </div>
+              <div className='modern-card-body'>
+                <div className='setting-control'>
+                  <label>Animation Speed: {Math.round(speed * 100) / 100}</label>
+                  <div className='slider-container'>
+                    <i className="fa fa-tachometer slow-icon"></i>
+                    <Slider 
+                      axis="x" 
+                      xmin={0.05} 
+                      xmax={0.50} 
+                      xstep={0.01} 
+                      x={speed} 
+                      onChange={({ x }) => setSpeed(x)} 
+                      className='modern-slider' 
+                    />
+                    <i className="fa fa-tachometer fast-icon"></i>
+                  </div>
+                </div>
 
-          <p className='label-style'>Animation Speed: {Math.round(speed * 100) / 100}</p>
-          <Slider axis="x" xmin={0.05} xmax={0.50} xstep={0.01} x={speed} onChange={({ x }) => setSpeed(x)} className='w-100 mb-3' />
+                <div className='setting-control'>
+                  <label>Pause Time: {pause} ms</label>
+                  <div className='slider-container'>
+                    <i className="fa fa-pause short-icon"></i>
+                    <Slider 
+                      axis="x" 
+                      xmin={0} 
+                      xmax={2000} 
+                      xstep={100} 
+                      x={pause} 
+                      onChange={({ x }) => setPause(x)} 
+                      className='modern-slider' 
+                    />
+                    <i className="fa fa-pause long-icon"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <p className='label-style'>Pause time: {pause} ms</p>
-          <Slider axis="x" xmin={0} xmax={2000} xstep={100} x={pause} onChange={({ x }) => setPause(x)} className='w-100' />
+            <div className='modern-card'>
+              <div className='modern-card-header'>
+                <i className="fa fa-info-circle"></i>
+                <span>Instructions</span>
+              </div>
+              <div className='modern-card-body'>
+                <ul className='instructions-list'>
+                  <li>Use the tabs to switch between speech and text input</li>
+                  <li>Click "Start Animation" to see the sign language translation</li>
+                  <li>Adjust speed and pause settings for optimal viewing</li>
+                  <li>Switch between Vishu and Khushi avatars</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
