@@ -1,10 +1,10 @@
 // src/pages/HomePage.js
 import React from 'react';
 import Header from '../Components/Header';
-import './Home.css'; // Create this for custom homepage styles
 import Features from '../Components/Features';
 import Impact from '../Components/Impact';
 import Footer from '../Components/Footer';
+import './Home.css';
 
 function Home() {
   return (
