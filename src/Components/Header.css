@@ -2,107 +2,136 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2rem;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 1.5rem 3rem;
+  background: rgba(225, 235, 255, 0.9); /* Light blue translucent */
+  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.2);
+  backdrop-filter: saturate(180%) blur(12px);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
+
+  /* Rounded corners */
+  border-radius: 1.5rem; /* make the header itself rounded */
+  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: box-shadow 0.35s ease, background 0.35s ease;
 }
 
+.site-header:hover {
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.4);
+  background: rgba(210, 225, 255, 0.95);
+}
+
+/* Logo */
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: #2563eb;
+  gap: 1rem;
+  user-select: none;
+  cursor: default;
 }
 
 .logo-icon-wrapper {
-  background: #2563eb;
-  color: #fff;
-  font-weight: bold;
+  background: linear-gradient(270deg, #3b82f6, #2563eb);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+  color: white;
+  font-weight: 900;
   border-radius: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3.2rem;
+  height: 3.2rem;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  align-items: center;
+  font-size: 1.7rem;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.7);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 1.55rem;
+  color: #2563eb;
 }
 
 .subtitle {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin-left: 0.5rem;
+  font-size: 0.9rem;
+  color: #3b82f6;
+  font-style: italic;
+  margin-top: 4px;
 }
 
+/* Navbar */
 .navbar {
   display: flex;
-  gap: 2rem;
-  font-weight: 500;
-  color: #334155;
+  gap: 3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1e40af;
+  font-size: 1rem;
+  transition: color 0.3s ease;
 }
 
 .navbar a {
   text-decoration: none;
-  color: #334155;
-  transition: color 0.2s;
+  position: relative;
+  padding-bottom: 5px;
+  color: #1e40af;
+  transition: color 0.3s ease, transform 0.25s ease;
 }
 
 .navbar a:hover {
-  color: #2563eb;
+  color: #3b82f6;
+  transform: translateY(-2px);
 }
 
+/* Nav Actions */
 .nav-actions {
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1.5rem;
 }
 
-.btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
+.nav-login {
   font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1rem;
+  color: #3b82f6;
+  text-decoration: none;
+  border: 2px solid transparent;
+  padding: 0.7rem 1.2rem;
+  border-radius: 9999px;
+  transition: all 0.25s ease;
 }
 
 .btn-primary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
   background: linear-gradient(to right, #4f46e5, #2563eb);
   color: white;
-  box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
 }
 
-@media (max-width: 900px) {
-  .site-header {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-  }
+.nav-link, .btn {
+  border-radius: 0; /* Remove rounded corners */
+  /* Optionally add underline for active links */
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.2s;
+}
 
-  .logo {
-    margin-bottom: 0.5rem;
-  }
-
-  .navbar {
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-  }
-
-  .nav-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
+.nav-link:hover, .btn:hover {
+  color: #4f46e5;
+  text-decoration: underline;
 }
