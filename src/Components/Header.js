@@ -12,10 +12,9 @@ function Header() {
         <span className="subtitle">Real-time ISL Translation</span>
       </div>
       <nav className="navbar">
-        <a href="/translate">Translate</a>
-        <a href="/learn">Learn</a>
+        <a href="/features">Features</a>
         <a href="/community">Community</a>
-        <a href="/dashboard">Dashboard</a>
+        <a href="/avatar">Avatar</a>
       </nav>
       <div className="nav-actions">
         <a href="/dashboard" className="nav-login">Dashboard</a>
