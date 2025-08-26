@@ -194,24 +194,20 @@ function LearnSign() {
     return newArray;
   };
 
-  // Handle user's guess
-  const handleGuess = (guess) => {
-    if (guess === currentSign) {
-      // Correct guess
-      setScore(score + 10);
-      setModalMessage("Correct! +10 points");
-    } else {
-<<<<<<< HEAD
-      setModalMessage(`Try again! The sign was for "${currentSign}"`);
+ // Handle user's guess
+const handleGuess = (guess) => {
+  if (guess === currentSign) {
+    // Correct guess
+    setScore(score + 10);
+    setModalMessage("Correct! +10 points");
+  } else {
+    // Incorrect guess
+    setModalMessage(`Try again! The sign was for "${currentSign}"`);
+  }
+  
+  setShowModal(true);
+};
 
-=======
-      // Incorrect guess
-      setModalMessage(`Try again! The sign was for "${currentSign}"`);
->>>>>>> 93275524d297210c3c577b2501064bb3a29551ca
-    }
-    
-    setShowModal(true);
-  };
 
   // Close modal and proceed to next round
   const closeModal = () => {
