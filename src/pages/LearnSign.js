@@ -201,8 +201,13 @@ function LearnSign() {
       setScore(score + 10);
       setModalMessage("Correct! +10 points");
     } else {
+<<<<<<< HEAD
       setModalMessage(`Try again! The sign was for "${currentSign}"`);
 
+=======
+      // Incorrect guess
+      setModalMessage(`Try again! The sign was for "${currentSign}"`);
+>>>>>>> 93275524d297210c3c577b2501064bb3a29551ca
     }
     
     setShowModal(true);
