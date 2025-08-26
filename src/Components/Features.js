@@ -11,7 +11,7 @@ const Features = () => {
       description:
         "Spoken words instantly converted into 3D animated avatars performing ISL with emotional accuracy.",
       details: ["Multiple language support", "3D avatar animation", "Emotion recognition"],
-      link: "/avatar",   // ✅ Direct to Avatar page
+      link: "/avatar",
     },
     {
       icon: "👋",
@@ -40,7 +40,18 @@ const Features = () => {
       description: "Interactive learning platform with gamified ISL lessons.",
       link: "/education",
     },
-    // ❌ Removed Emergency SOS feature here
+    {
+      icon: "🚨",
+      title: "Emergency SOS",
+      description:
+        "Quickly send your location and an alert message to emergency contacts in critical situations.",
+      details: [
+        "Instant SOS alert",
+        "Automatic location sharing",
+        "Predefined emergency contacts",
+      ],
+      link: "/sos",
+    },
     {
       icon: "🤖",
       title: "ISL Chatbot",

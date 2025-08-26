@@ -45,21 +45,7 @@ function Header() {
           }}
         >
           <a href="#features" onClick={scrollToFeatures}>Features</a>
-          <a
-            href="#chatbot"
-            className="chatbot-highlight"
-            style={{
-              background: "linear-gradient(90deg, #6366f1, #a78bfa, #f472b6)",
-              color: "#fff",
-              padding: "8px 18px",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              boxShadow: "0 2px 8px rgba(99,102,241,0.15)",
-              animation: "bounce 2s infinite",
-            }}
-          >
-            🚀 Try Our Chatbot
-          </a>
+          {/* Removed "Try Our Chatbot" link */}
         </nav>
 
         <div className="nav-actions"></div>

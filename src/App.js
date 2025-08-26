@@ -7,6 +7,9 @@ import LearnSign from './pages/LearnSign';
 import Dictionary from './pages/Dictionary';
 import Practice from './pages/Practice';
 import Chatbot from './pages/Chatbot';
+import AnnouncementCards from './pages/PublicAnnoucment/AnnouncementCards';
+import RailwayAnnouncement from './pages/PublicAnnoucment/RailwayAnnouncement';
+import BusAnnouncement from './pages/PublicAnnoucment/BusAnnouncement';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/dictionary" element={<Dictionary />} />
         <Route path="/practice" element={<Practice />} />
         <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/public-space" element={<AnnouncementCards />} />
+        <Route path="/railway-announcement" element={<RailwayAnnouncement />} />
+        <Route path="/bus-announcement" element={<BusAnnouncement />} />
       </Routes>
     </BrowserRouter>
   );

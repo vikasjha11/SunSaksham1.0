@@ -1,4 +1,6 @@
+// src/pages/PublicAnnouncement.js
 import React, { useState, useEffect, useRef } from "react";
+import './pa.css'
 
 // Dictionary with phrases + bilingual support
 const SIGN_DICT = {
@@ -33,6 +35,7 @@ const SIGN_DICT = {
 
   "rescheduled": ["/signs/rescheduled.gif"],
   "punah nirdharit": ["/signs/rescheduled.gif"],
+
   "thank you": ["/signs/tenor.gif"],
   "dhanyvad": ["/signs/tenor.gif"],
   "thanks": ["/signs/tenor.gif"],
@@ -40,7 +43,6 @@ const SIGN_DICT = {
 
 // Keyword fallback mapping
 const KEYWORD_MAP = {
-  
   welcome: ["/signs/welcome.gif"],
   swagat: ["/signs/welcome.gif"],
 
@@ -58,14 +60,12 @@ const KEYWORD_MAP = {
   badlaav: ["/signs/pc.gif"],
   change: ["/signs/pc.gif"],
 
-
   arriving: ["/signs/arriving.gif"],
   "a rahi": ["/signs/arriving.gif"],
 
   departing: ["/signs/departing.gif"],
   "ja rahi": ["/signs/departing.gif"],
 
-  
   cancelled: ["/signs/cancelled.gif"],
   radd: ["/signs/cancelled.gif"],
   cancel: ["/signs/cancelled.gif"],
@@ -75,11 +75,10 @@ const KEYWORD_MAP = {
 
   rescheduled: ["/signs/rescheduled.gif"],
   punah: ["/signs/rescheduled.gif"],
+
   thank: ["/signs/tensor.gif"],
   dhanyvad: ["/signs/tensor.gif"],
   thanks: ["/signs/tensor.gif"],
-
-
 };
 
 // Sample timetable
@@ -96,7 +95,7 @@ const TRAIN_TIMETABLE = [
   { no: "12461", name: "Kolkata Shatabdi", time: "18:15", platform: "2", status: "Arriving" },
 ];
 
-export default function ISLApp() {
+export default function PublicAnnouncement() {
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [animations, setAnimations] = useState([]);
@@ -105,48 +104,47 @@ export default function ISLApp() {
 
   const normalize = (text) => text?.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").trim();
 
-  // --- Get all unique GIFs for a sentence, including multiple animations per keyword ---
-const getGifsForText = (text) => {
-  if (!text) return [];
-  const clean = normalize(text);
-  const words = clean.split(/\s+/);
-  const gifs = [];
+  // --- Get all unique GIFs for a sentence ---
+  const getGifsForText = (text) => {
+    if (!text) return [];
+    const clean = normalize(text);
+    const words = clean.split(/\s+/);
+    const gifs = [];
 
-  let i = 0;
-  while (i < words.length) {
-    let matched = false;
+    let i = 0;
+    while (i < words.length) {
+      let matched = false;
 
-    // 1️⃣ Try to match multi-word phrases from SIGN_DICT
-    for (const phrase of Object.keys(SIGN_DICT)) {
-      const phraseWords = phrase.split(" ");
-      const segment = words.slice(i, i + phraseWords.length).join(" ");
-      if (segment === phrase) {
-        SIGN_DICT[phrase].forEach((g) => {
-          if (!gifs.includes(g)) gifs.push(g);
-        });
-        i += phraseWords.length;
-        matched = true;
-        break;
-      }
-    }
-
-    // 2️⃣ If no phrase matched, try single word in KEYWORD_MAP
-    if (!matched) {
-      const word = words[i];
-      for (const key of Object.keys(KEYWORD_MAP)) {
-        if (word.includes(key)) {
-          KEYWORD_MAP[key].forEach((g) => {
+      // 1️⃣ Multi-word phrases
+      for (const phrase of Object.keys(SIGN_DICT)) {
+        const phraseWords = phrase.split(" ");
+        const segment = words.slice(i, i + phraseWords.length).join(" ");
+        if (segment === phrase) {
+          SIGN_DICT[phrase].forEach((g) => {
             if (!gifs.includes(g)) gifs.push(g);
           });
+          i += phraseWords.length;
+          matched = true;
+          break;
         }
       }
-      i += 1;
+
+      // 2️⃣ Single word fallback
+      if (!matched) {
+        const word = words[i];
+        for (const key of Object.keys(KEYWORD_MAP)) {
+          if (word.includes(key)) {
+            KEYWORD_MAP[key].forEach((g) => {
+              if (!gifs.includes(g)) gifs.push(g);
+            });
+          }
+        }
+        i += 1;
+      }
     }
-  }
 
-  return gifs;
-};
-
+    return gifs;
+  };
 
   const handleAnnouncement = (text) => {
     setTranscript(text);
@@ -191,8 +189,6 @@ const getGifsForText = (text) => {
   };
 
   const manualAnnounce = (text) => handleAnnouncement(text);
-  const triggerSOS = () => alert("SOS triggered — location & message would be sent to emergency contacts.");
-
   return (
     <div className="page">
       <header className="header">
@@ -201,7 +197,6 @@ const getGifsForText = (text) => {
           <p className="sub">Live speech → Text → Sign animation (for deaf passengers)</p>
         </div>
         <div className="header-right">
-          <button className="sos" onClick={triggerSOS}>SOS</button>
           <button className={`listen ${listening ? "listening" : ""}`} onClick={toggleListening}>
             {listening ? "Stop Listening" : "Start Listening"}
           </button>
