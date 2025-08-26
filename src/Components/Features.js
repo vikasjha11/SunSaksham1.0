@@ -9,16 +9,16 @@ const Features = () => {
       icon: "🗣",
       title: "Real-Time Audio → ISL",
       description:
-        "Spoken words instantly converted into 3D animated avatars performing ISL with emotional accuracy.",
-      details: ["Multiple language support", "3D avatar animation", "Emotion recognition"],
+        "Instantly transform spoken words into expressive 3D avatars communicating in Indian Sign Language with clarity and emotional depth.",
+      details: ["Multi-language support", "3D avatar animation"],
       link: "/avatar",
     },
     {
       icon: "👋",
-      title: "Sign Language → Voice/Text",
+      title: "Gamified ISL Learning",
       description:
-        "Camera captures ISL gestures and converts them into clear speech and text for seamless communication.",
-      details: ["Real-time gesture recognition", "Voice synthesis", "Text output"],
+        "Master Indian Sign Language through interactive lessons, quizzes, and challenges that make learning fun, engaging, and rewarding.",
+      details: ["Interactive lessons", "Gamified challenges", "Progress tracking"],
       link: "/learn-sign",
     },
     {
@@ -33,12 +33,6 @@ const Features = () => {
         "Government services",
       ],
       link: "/public-space",
-    },
-    {
-      icon: "🎓",
-      title: "Educational & Community",
-      description: "Interactive learning platform with gamified ISL lessons.",
-      link: "/education",
     },
     {
       icon: "🚨",

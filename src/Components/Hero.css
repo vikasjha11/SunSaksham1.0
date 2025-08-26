@@ -41,3 +41,17 @@
   background: rgba(241, 245, 249, 0.95);
   transform: translateY(-2px);
 }
+
+/* Avatar Image floating on the right */
+.avatar-image {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  z-index: 5;
+  transition: all 0.3s ease;
+}

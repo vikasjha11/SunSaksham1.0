@@ -10,6 +10,7 @@ import Chatbot from './pages/Chatbot';
 import AnnouncementCards from './pages/PublicAnnoucment/AnnouncementCards';
 import RailwayAnnouncement from './pages/PublicAnnoucment/RailwayAnnouncement';
 import BusAnnouncement from './pages/PublicAnnoucment/BusAnnouncement';
+import EmergencySOS from './pages/EmergencySOS';   // ✅ import SOS page
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/public-space" element={<AnnouncementCards />} />
         <Route path="/railway-announcement" element={<RailwayAnnouncement />} />
         <Route path="/bus-announcement" element={<BusAnnouncement />} />
+        <Route path="/sos" element={<EmergencySOS />} />   {/* ✅ new route */}
       </Routes>
     </BrowserRouter>
   );

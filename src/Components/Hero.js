@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './Hero.css';
+import avatar from '../../public/images/avatar.png'; // Importing the avatar image
 
 const Hero = () => {
   return (
@@ -9,6 +10,16 @@ const Hero = () => {
       {/* Background gradient blobs */}
       <div className="absolute -top-40 -left-40 w-[400px] h-[400px] bg-blue-300/30 rounded-full blur-[120px]" />
       <div className="absolute -bottom-40 -right-40 w-[350px] h-[350px] bg-indigo-300/30 rounded-full blur-[120px]" />
+
+      {/* Avatar Image floating on the right */}
+      <motion.img
+        src={avatar}
+        alt="Avatar"
+        className="avatar-image"
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      />
 
       <motion.div
         initial="hidden"

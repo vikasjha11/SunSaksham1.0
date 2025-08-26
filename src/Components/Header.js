@@ -1,13 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 function Header() {
+  const navigate = useNavigate();
+
   const scrollToFeatures = (e) => {
-    e.preventDefault(); // stop page reload
+    e.preventDefault();
     const section = document.getElementById("features");
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const goToSOS = () => {
+    navigate('/sos');
   };
 
   return (
@@ -40,15 +47,34 @@ function Header() {
             padding: "10px 28px",
             boxShadow: "0 2px 12px rgba(99,102,241,0.08)",
             display: "flex",
-            gap: "18px",
-            alignItems: "center"
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <a href="#features" onClick={scrollToFeatures}>Features</a>
-          {/* Removed "Try Our Chatbot" link */}
-        </nav>
+          {/* Left group: Features */}
+          <div className="nav-links" style={{ display: "flex", gap: "18px" }}>
+            <a href="#features" onClick={scrollToFeatures}>Features</a>
+          </div>
 
-        <div className="nav-actions"></div>
+          {/* Right group: SOS button */}
+          <div className="nav-actions">
+            <button
+              className="sos-button"
+              onClick={goToSOS}
+              style={{
+                backgroundColor: "#EF4444",
+                color: "#fff",
+                padding: "8px 16px",
+                borderRadius: "12px",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              SOS
+            </button>
+          </div>
+        </nav>
       </header>
     </div>
   );
