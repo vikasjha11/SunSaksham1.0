@@ -22,6 +22,7 @@ export default function AnnouncementCards() {
         </div>
       </header>
 
+      {/* Main cards for Railway and Bus announcement */}
       <main className="main" style={{ gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
         {/* Railway Card */}
         <div className="panel" style={{ cursor: 'pointer', transition: 'transform 0.2s' }} onClick={handleRailwayClick}>

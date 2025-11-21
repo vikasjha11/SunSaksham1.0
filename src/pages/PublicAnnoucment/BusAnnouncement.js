@@ -1,55 +1,80 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import './pa.css'
 
-// ===== Minimal SIGN_DICT with 4 announcements =====
 const SIGN_DICT = {
-  welcome: {
-    variants: ["welcome", "swagat hai", "swagat"],
-    gifs: ["/signs/welcome.gif"],
-  },
-  attention: {
-    variants: ["attention", "dhyan dein"],
-    gifs: ["/signs/attention.gif"],
-  },
-  change: {
-    variants: ["bus route change", "platform change", "bus stand badlaav"],
-    gifs: ["/signs/change.jpg"],
-  },
-  cancelled: {
-    variants: ["bus cancelled", "bus radd", "bus cancel", "cancelled"],
-    gifs: ["/signs/cancel.jpg"],
-  },
+  "welcome": ["/signs/welcomes.jpg"],
+  "swagat hai": ["/signs/welcomes.jpg"],
+  "attention": ["/signs/attention.gif"],
+  "dhyan dein": ["/signs/attention.gif"],
+  "delay": ["/signs/delay.gif", "/signs/deri.gif"],
+  "deri": ["/signs/delay.gif", "/signs/deri.gif"],
+  "late": ["/signs/delay.gif", "/signs/deri.gif"],
+  "early": ["/signs/EARLY.gif", "/signs/jaldi.gif"],
+  "jaldi": ["/signs/EARLY.gif", "/signs/jaldi.gif"],
+  "platform change": ["/signs/pc.gif"],
+  "platform badlaav": ["/signs/pc.gif"],
+  "bus is arriving": ["/signs/arriving.gif"],
+  "bus a rahi hai": ["/signs/arriving.gif"],
+  "bus is departing": ["/signs/departing.gif"],
+  "bus ja rahi hai": ["/signs/departing.gif"],
+  "bus cancelled": ["/signs/cancelled.gif"],
+  "bus radd": ["/signs/cancelled.gif"],
+  "bus cancel": ["/signs/cancelled.gif"],
+  "on time": ["/signs/ontime.gif"],
+  "samay par": ["/signs/ontime.gif"],
+  "rescheduled": ["/signs/rescheduled.gif"],
+  "punah nirdharit": ["/signs/rescheduled.gif"],
+  "thank you": ["/signs/tenor.gif"],
+  "dhanyvad": ["/signs/tenor.gif"],
+  "thanks": ["/signs/tenor.gif"],
 };
 
-// ===== Sample timetable (Bus station) =====
-const BUS_TIMETABLE = [
+const KEYWORD_MAP = {
+  welcome: ["/signs/welcome.gif"],
+  swagat: ["/signs/welcomes.gif"],
+  early: ["/signs/arriving.jpg"],
+  jaldi: ["/signs/arriving.jpg"],
+  platform: ["/signs/change.jpg"],
+  badlaav: ["/signs/change.jpg"],
+  change: ["/signs/change.jpg"],
+  arriving: ["/signs/arriving.jpg"],
+  "a rahi": ["/signs/arriving.gif"],
+  departing: ["/signs/leaving.jpg"],
+  "ja rahi": ["/signs/leaving.jpg"],
+  cancelled: ["/signs/cancelled.gif"],
+  radd: ["/signs/cancelled.gif"],
+  cancel: ["/signs/cancelled.gif"],
+  time: ["/signs/ontime.gif"],
+  samay: ["/signs/ontime.gif"],
+  rescheduled: ["/signs/rescheduled.gif"],
+  punah: ["/signs/rescheduled.gif"],
+  thank: ["/signs/thank.gif"],
+  dhanyvad: ["/signs/thank.gif"],
+  thanks: ["/signs/thank.gif"],
+};
+
+const TIMETABLE = [
   { no: "B001", name: "City Express", time: "10:30", platform: "A1", status: "Arriving" },
   { no: "B002", name: "Metro Shuttle", time: "11:15", platform: "B2", status: "Delayed" },
   { no: "B003", name: "Airport Connect", time: "12:05", platform: "C3", status: "On Time" },
   { no: "B004", name: "Downtown Loop", time: "13:00", platform: "D4", status: "On Time" },
   { no: "B005", name: "Suburban Express", time: "14:30", platform: "E5", status: "Delayed" },
   { no: "B006", name: "Night Rider", time: "15:15", platform: "F6", status: "Arriving" },
+  { no: "B007", name: "Rapid Transit", time: "16:00", platform: "G7", status: "On Time" },
+  { no: "B008", name: "Commuter Line", time: "16:45", platform: "H8", status: "Delayed" },
+  { no: "B009", name: "Express Service", time: "17:30", platform: "I9", status: "On Time" },
+  { no: "B010", name: "City Circular", time: "18:15", platform: "J10", status: "Arriving" },
 ];
 
 export default function BusAnnouncement() {
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [animations, setAnimations] = useState([]);
-  const [timedata] = useState(BUS_TIMETABLE);
+  const [timedata] = useState(TIMETABLE);
   const recognitionRef = useRef(null);
 
-  const normalize = (text) =>
-    text?.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").trim();
+  const normalize = (text) => text?.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").trim();
 
-  // Precompute all variants sorted by length (prefer multi-word)
-  const variantsSorted = useMemo(() => {
-    const all = [];
-    Object.values(SIGN_DICT).forEach((entry) => {
-      entry.variants.forEach((v) => all.push(v));
-    });
-    return all.sort((a, b) => b.length - a.length);
-  }, []);
-
-  // --- Match text against SIGN_DICT (using variants) ---
   const getGifsForText = (text) => {
     if (!text) return [];
     const clean = normalize(text);
@@ -59,45 +84,44 @@ export default function BusAnnouncement() {
     let i = 0;
     while (i < words.length) {
       let matched = false;
-      for (const variant of variantsSorted) {
-        const variantWords = variant.split(" ");
-        const segment = words.slice(i, i + variantWords.length).join(" ");
-        if (segment === variant) {
-          const intent = Object.values(SIGN_DICT).find((entry) =>
-            entry.variants.includes(variant)
-          );
-          if (intent) {
-            intent.gifs.forEach((g) => {
-              if (!gifs.includes(g)) gifs.push(g);
-            });
-          }
-          i += variantWords.length;
+      for (const phrase of Object.keys(SIGN_DICT)) {
+        const phraseWords = phrase.split(" ");
+        const segment = words.slice(i, i + phraseWords.length).join(" ");
+        if (segment === phrase) {
+          SIGN_DICT[phrase].forEach((g) => {
+            if (!gifs.includes(g)) gifs.push(g);
+          });
+          i += phraseWords.length;
           matched = true;
           break;
         }
       }
-      if (!matched) i++;
+      if (!matched) {
+        const word = words[i];
+        for (const key of Object.keys(KEYWORD_MAP)) {
+          if (word.includes(key)) {
+            KEYWORD_MAP[key].forEach((g) => {
+              if (!gifs.includes(g)) gifs.push(g);
+            });
+          }
+        }
+        i += 1;
+      }
     }
-
     return gifs;
   };
 
   const handleAnnouncement = (text) => {
     setTranscript(text);
-    // 👉 Only show animation *after listening is completed*
-    setTimeout(() => {
-      setAnimations(getGifsForText(text));
-    }, 300); // short delay so transcript updates first
+    setAnimations(getGifsForText(text));
   };
 
-  // --- Live Speech Recognition ---
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return;
 
     const recog = new SpeechRecognition();
-    recog.continuous = false; // stop after one utterance
+    recog.continuous = true;
     recog.interimResults = false;
     recog.lang = "en-IN";
 
@@ -109,54 +133,35 @@ export default function BusAnnouncement() {
       if (finalText) handleAnnouncement(finalText);
     };
 
-    recog.onend = () => {
-      // stop listening after recognition ends
-      setListening(false);
-    };
-
     recog.onerror = (e) => console.warn("SpeechRecognition error", e);
     recognitionRef.current = recog;
 
     return () => {
-      try {
-        recog.stop();
-      } catch {}
+      try { recog.stop(); } catch {}
     };
   }, []);
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;
     if (!listening) {
-      setTranscript("");
-      setAnimations([]);
-      try {
-        recognitionRef.current.start();
-        setListening(true);
-      } catch {}
+      setTranscript(""); setAnimations([]);
+      try { recognitionRef.current.start(); setListening(true); } catch {}
     } else {
-      try {
-        recognitionRef.current.stop();
-      } catch {}
+      try { recognitionRef.current.stop(); } catch {}
       setListening(false);
     }
   };
 
   const manualAnnounce = (text) => handleAnnouncement(text);
-
   return (
     <div className="page">
       <header className="header">
         <div className="header-left">
           <h1>🚌 Bus ISL Assistant</h1>
-          <p className="sub">
-            Live speech → Text → Sign animation (for deaf passengers)
-          </p>
+          <p className="sub">Live speech → Text → Sign animation (for deaf passengers)</p>
         </div>
         <div className="header-right">
-          <button
-            className={`listen ${listening ? "listening" : ""}`}
-            onClick={toggleListening}
-          >
+          <button className={`listen ${listening ? "listening" : ""}`} onClick={toggleListening}>
             {listening ? "Stop Listening" : "Start Listening"}
           </button>
         </div>
@@ -170,17 +175,10 @@ export default function BusAnnouncement() {
               {transcript || <em>Waiting for announcement...</em>}
             </div>
             <div className="controls">
-              <button onClick={() => manualAnnounce("welcome")}>
-                Test: "welcome"
-              </button>
-              <button onClick={() => manualAnnounce("attention")}>
-                Test: "attention"
-              </button>
-              <button onClick={() => manualAnnounce("bus route change")}>
-                Test: "bus route change"
-              </button>
-              <button onClick={() => manualAnnounce("bus cancelled")}>
-                Test: "bus cancelled"
+              <button onClick={() => manualAnnounce("thank you")}>Test: "thank you"</button>
+              <button onClick={() => manualAnnounce("platform change")}>Test: "platform change"</button>
+              <button onClick={() => manualAnnounce("yatrigan kripya dhyan dein bus deri se chal rahi hai")}>
+                Test: Attention + Delay
               </button>
             </div>
           </div>
@@ -188,13 +186,9 @@ export default function BusAnnouncement() {
           <div className="panel animation">
             <h2>Sign Animation</h2>
             <div className="animation-stage" aria-live="polite">
-              {animations.length ? (
-                animations.map((src, idx) => (
-                  <img key={idx} src={src} alt="ISL sign" />
-                ))
-              ) : (
-                <div className="placeholder">Animation will appear here</div>
-              )}
+              {animations.length
+                ? animations.map((src, idx) => <img key={idx} src={src} alt="ISL sign" />)
+                : <div className="placeholder">Animation will appear here</div>}
             </div>
           </div>
         </section>
@@ -219,15 +213,7 @@ export default function BusAnnouncement() {
                     <td>{r.name}</td>
                     <td>{r.time}</td>
                     <td>{r.platform}</td>
-                    <td
-                      className={
-                        r.status === "Delayed"
-                          ? "status delayed"
-                          : "status ontime"
-                      }
-                    >
-                      {r.status}
-                    </td>
+                    <td className={r.status === "Delayed" ? "status delayed" : "status ontime"}>{r.status}</td>
                   </tr>
                 ))}
               </tbody>
@@ -236,9 +222,7 @@ export default function BusAnnouncement() {
         </aside>
       </main>
 
-      <footer className="footer">
-        © 2025 Bus Transport — ISL Assistant
-      </footer>
+      <footer className="footer">© 2025 Bus Transport — ISL Assistant</footer>
     </div>
   );
 }

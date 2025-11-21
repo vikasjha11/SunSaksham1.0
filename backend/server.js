@@ -7,17 +7,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4001;
 
-app.use(cors());              // allow all origins for dev
-app.use(express.json());      // parses JSON bodies
+app.use(cors());             
+app.use(express.json());     
 
 // Init Gemini
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// Health check
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
-
-// 🔹 Chat endpoint (focused on ISL learning & inclusivity)
 app.post("/api/chat", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -63,5 +60,5 @@ app.post("/api/isl-plan", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ API up at http://localhost:${PORT}`);
+  console.log(` API up at http://localhost:${PORT}`);
 });
